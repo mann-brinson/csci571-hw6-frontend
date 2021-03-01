@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+/*GLOBAL STYLING */
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/*HORIZONTAL TITLE BAR */
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a.active {
+  /*background-color: #4CAF50;*/
+  color: white;
+}
+
+/*HORIZONTAL CONTAINER FOR SIDE BAR AND CONTENT */
+.row {
+  width:1500px;
+  height:800px;
+  position:fixed;
+  /*overflow:auto;*/
+}
+
+/*VERTICAL LEFT NAV BAR*/
+.sidenav {
+  float: left;
+  height: 100%;
+  width: 160px;
+  /*position: fixed;*/
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/*OPTION 1: HOME PAGE*/
+.column_home {
+  float: left;
+  /*position: relative;*/
+  /*white-space: nowrap;*/
+  display: inline-block;
+  /*overflow: hidden;*/
+  resize: none;
+  width: 1200px;
+  padding: 10px;
+  /*overflow:auto;*/
+  height: 100%;
+  
+}
+
+/*OPTION 2: SEARCH PAGE*/
+.column_search {
+  float: left;
+  /*position: relative;*/
+  /*white-space: nowrap;*/
+  display: none;
+  /*overflow: hidden;*/
+  color: blue;
+  resize: none;
+  width: 1200px;
+  padding: 10px;
+  /*overflow:auto;*/
+  height: 100%;
+  
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+  position: fixed;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Horizontal nav bar -->
+<div class="topnav">
+  <a class="active">THE MOVIE DB</a>
+</div>
+
+<!-- Container for vertical nav and content -->
+<div class="row">
+  <!-- Left: vertical nav -->
+  <div class="sidenav" style="background-color:#aaa;">
+    <a onclick="selectView('column_home', 'column_search')" >Home</a>
+    <a onclick="selectView('column_search', 'column_home')">Search</a>
+  </div>
+
+  <!-- Right: content -->
+  <!-- HOME PAGE -->
+  <div id="column_home" class="column_home" style="background-color:#bbb;">
+
+    <!-- Trending movies go here -->
+    <h2>Trending</h2>
+    <div class="slideshow-container-trending">
+      <div id='trending'></div> 
+    </div>
+
+    <h2>Airing</h2>
+    <div class="slideshow-container-airing">
+      <div id='airing'></div> 
+    </div>
+
+  </div>
+
+  <!-- SEARCH PAGE -->
+  <div id="column_search" class="column_search" style="background-color:#ccc;">
+    <h2>Search page title</h2>
+    <p>Search page content</p>
+  </div>
+
+</div>
+
+</body>
+
+<script>
+  ///// DRIVER /////
+  // Works if CORS enabled on flask server
+  const url1 = "http://localhost:5000/home"; 
+  var slideIndex1 = 0;
+  var slideIndex2 = 0;
+
+  var req1 = new XMLHttpRequest();
+  var req2 = new XMLHttpRequest();
+
+  req1.onreadystatechange = function() {
+    if (req1.readyState == 4 && req1.status == 200) {
+
+      //Construct trending
+      var movie_type = "trending";
+      var item_type = "item-trending";
+      
+      divsFromJson(req1, movie_type, item_type); // Working: TEST 3
+      showSlides(item_type, slideIndex1); // Working: TEST 4
+    }
+  };
+  var req2 = new XMLHttpRequest();
+  req2.onreadystatechange = function() {
+    if (req2.readyState == 4 && req2.status == 200) {
+
+      //Construct trending
+      var movie_type = "airing";
+      var item_type = "item-airing";
+      
+      divsFromJson(req2, movie_type, item_type); // Working: TEST 3
+      showSlides(item_type, slideIndex2); // Working: TEST 4
+    }
+  };
+  req1.open("GET", url1, true); // asynchronous
+  req1.send();
+
+  req2.open("GET", url1, true); // asynchronous
+  req2.send();
+
+  ///// FUNCTIONS /////
+
+  // TEST 3: Instead of table, make a list of divs
+  function divsFromJson(req, movie_type, item_type) {
+    // req: xhr request
+    // movie_type: key name of movie subset, can be "trending" or "airing"
+    var data = req.responseText;
+    var data_json = JSON.parse(data);
+    // var trending = data_json["trending"];
+    var movie_sub = data_json[movie_type];
+
+    var div1 = document.createElement("div");
+
+    // add json data to the table as rows.
+    for (var i = 0; i < movie_sub.length; i++) {
+
+        var div2 = document.createElement("div"); //Item header
+        div2.classList.add(item_type);
+
+        //Title
+        div2.innerHTML = movie_sub[i]['name'];
+        div1.appendChild(div2);
+
+        //Image
+        var img = document.createElement("img"); 
+        const backdrop_path = movie_sub[i]['backdrop_path']
+        img.src = backdrop_path;
+        img.classList.add("movie_item_img");
+        img.style.height = "250px";
+        div2.appendChild(img);
+
+        //Release date
+        var div3 = document.createElement("div"); 
+        div3.innerHTML = movie_sub[i]['release_date'];
+        div2.appendChild(div3);
+
+        if (movie_type == "trending") {
+          div3.innerHTML = movie_sub[i]['release_date'];
+        } else {
+          div3.innerHTML = movie_sub[i]['first_air_date'];
+        }
+        div2.appendChild(div3);
+    }
+
+    // Now, add the newly created table with json data, to a container.
+    // var divShowData = document.getElementById("trending");
+    var divShowData = document.getElementById(movie_type);
+    divShowData.innerHTML = "";
+    divShowData.appendChild(div1);
+  }
+
+  // TEST 4: After rendering json-to-divs, show slides
+  function showSlides(item_type, slideIndex) {
+    var i;
+    // var trend_items = document.getElementsByClassName("item-trending");
+    console.log({"item_type": item_type});
+    var trend_items = document.getElementsByClassName(item_type);
+
+    // var trend_itemset = document.getElementsById("trending");
+    // var trend_items = trend_itemset.getElementsByClassName("movie_item");
+    for (i = 0; i < trend_items.length; i++) {
+      var test = trend_items[i].innerText;
+      console.log({"Current item" : test})
+      trend_items[i].style.display = "none";  
+    }
+    slideIndex++;
+
+    //Repeat over-and-over
+    if (slideIndex > trend_items.length) {slideIndex = 1}
+
+    trend_items[slideIndex-1].style.display = "block";
+    // setTimeout(showSlides, 2000); // Change image every 2 secs
+    setTimeout(showSlides.bind(null, item_type, slideIndex), 2000);
+
+    // trend_items[0].style.display = "block";
+  }
+
+  function selectView(active_page_type, inactive_page_type) {
+    // console.log({'active: ': active_page_type})
+    // console.log({'inactive: ': active_page_type})
+
+    var active_page = document.getElementById(active_page_type);
+    var inactive_page = document.getElementById(inactive_page_type);
+    active_page.style.display = "inline-block";
+    inactive_page.style.display = "none";
+  }
+</script>
+</html>

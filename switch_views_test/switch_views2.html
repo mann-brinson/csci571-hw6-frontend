@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+/*GLOBAL STYLING */
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/*HORIZONTAL TITLE BAR */
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a.active {
+  /*background-color: #4CAF50;*/
+  color: white;
+}
+
+/*HORIZONTAL CONTAINER FOR SIDE BAR AND CONTENT */
+.row {
+  width:1500px;
+  height:800px;
+  position:fixed;
+  /*overflow:auto;*/
+}
+
+/*VERTICAL LEFT NAV BAR*/
+.sidenav {
+  float: left;
+  height: 100%;
+  width: 160px;
+  /*position: fixed;*/
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/*OPTION 1: HOME PAGE*/
+.column_home {
+  float: left;
+  /*position: relative;*/
+  /*white-space: nowrap;*/
+  display: inline-block;
+  /*overflow: hidden;*/
+  resize: none;
+  width: 1200px;
+  padding: 10px;
+  /*overflow:auto;*/
+  height: 100%;
+  
+}
+
+/*OPTION 2: SEARCH PAGE*/
+.column_search {
+  float: left;
+  /*position: relative;*/
+  /*white-space: nowrap;*/
+  display: none;
+  /*overflow: hidden;*/
+  color: blue;
+  resize: none;
+  width: 1200px;
+  padding: 10px;
+  /*overflow:auto;*/
+  height: 100%;
+  
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+  position: fixed;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Horizontal nav bar -->
+<div class="topnav">
+  <a class="active">THE MOVIE DB</a>
+</div>
+
+<!-- Container for vertical nav and content -->
+<div class="row">
+  <!-- Left: vertical nav -->
+  <div class="sidenav" style="background-color:#aaa;">
+    <a onclick="selectView('column_home', 'column_search')" >Home</a>
+    <a onclick="selectView('column_search', 'column_home')">Search</a>
+  </div>
+
+  <!-- Right: content -->
+  <div id="column_home" class="column_home" style="background-color:#bbb;">
+    <h2>Home page title</h2>
+    <p>Home page content</p>
+  </div>
+
+  <div id="column_search" class="column_search" style="background-color:#ccc;">
+    <h2>Search page title</h2>
+    <p>Search page content</p>
+  </div>
+
+</div>
+
+</body>
+
+<script>
+  function selectView(active_page_type, inactive_page_type) {
+    // console.log({'active: ': active_page_type})
+    // console.log({'inactive: ': active_page_type})
+
+    var active_page = document.getElementById(active_page_type);
+    var inactive_page = document.getElementById(inactive_page_type);
+    active_page.style.display = "inline-block";
+    inactive_page.style.display = "none";
+  }
+</script>
+</html>

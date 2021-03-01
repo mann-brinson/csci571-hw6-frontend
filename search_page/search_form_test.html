@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+
+	/*GLOBAL STYLING */
+	body {
+	  margin: 0;
+	  font-family: Arial, Helvetica, sans-serif;
+	}
+
+	.outer_search_container {
+		width:500px;
+  		height:200px;
+  		position:fixed;
+	}
+
+	/*INPUT FORM*/
+	.flex-container {
+	  display: flex;
+	  flex-direction: column;
+	  background-color: DodgerBlue;
+	}
+
+	.flex-container > div {
+	  /*background-color: #f1f1f1;*/
+	  width: 400px;
+	  margin: 10px;
+	  text-align: center;
+	  /*line-height: 75px;*/
+	  /*font-size: 30px;*/
+	}
+
+	/*SEARCH RESULT RECORDS */
+	.flex-container-record {
+	  display: flex;
+	}
+
+	.flex-container-record > div {
+	  background-color: #f1f1f1;
+	  /*margin: 10px;*/
+	  /*padding: 20px;*/
+	  /*font-size: 30px;*/
+	}
+
+
+	</style>
+</head>
+
+<body>
+	<!-- TESTING -->
+	<!-- <form id="content_search_form" name="content_search_form" onsubmit ="return false" > -->
+	<form id="content_search_form" name="content_search_form" onsubmit ="return false" >
+		<div id="flex-container" class="flex-container">
+			
+			  <div id="keyword_field">
+			  	<label for="search_terms">Keyword</label>
+			  	<input type="text" id="search_terms" name="search_terms" >
+			  </div>
+
+			  <div name="category_field">
+			  	<label for="content_type">Category</label>
+			  	<select name="content_type" id="content_type">
+			  		<option value="default"></option>
+				    <option value="movie">Movies</option>
+				    <option value="tv">TV Shows</option>
+				    <option value="multi">Movies and TV Shows</option>
+			  	</select>
+			  </div> 
+
+			  <div>
+				<input type="submit" onclick="validateForm()" value="Submit">
+			  	<input type="button" onclick="resetFields()" value="Reset form">
+			  </div>
+			
+		</div>
+	</form> 
+
+	<div class="search_results" id="search_results">
+	</div>
+	
+
+</body>
+
+<script>
+	document.getElementById("content_type").selectedIndex = -1; //Category field is empty at first
+
+	function divsFromJsonSearch(req) {
+		// req: xhr request
+		var data = req.responseText;
+		var data_json = JSON.parse(data);
+		var search_result = data_json["search_result"];
+
+		var search_result_container = document.createElement("div");
+		search_result_container.classList.add("search_result_content");
+
+		// if the result is nothing
+	    if (search_result.length == 0) {
+	    	search_result_container.innerHTML = 'No results found';
+
+		    // Return a 'no results found message'
+		    var divShowData = document.getElementById("search_results");
+		    divShowData.innerHTML = "";
+		    divShowData.appendChild(search_result_container);
+		    return;
+
+	    // else, render the found results
+	    } else {
+			// add json data to the table as rows.
+			for (var i = 0; i < search_result.length; i++) {
+
+				//Create a record object to hold the extracted features
+			    var record = document.createElement("div");
+			    record.classList.add("flex-container-record");
+
+				// if (search_result[i]["media_type"] == "movie") {
+				console.log('parse movie features here'); //Test
+
+				//COL 1
+				var col1 = document.createElement("div"); //Item header
+				col1.classList.add("col_1");
+				record.appendChild(col1);
+
+				//Poster path
+		        var img = document.createElement("img"); 
+		        const poster_path = search_result[i]['poster_path']
+		        img.src = poster_path;
+		        img.classList.add("movie_item_img");
+		        img.style.width = "185px";
+		        col1.appendChild(img);
+
+				//COL 2
+				var col2 = document.createElement("div"); //Item header
+				col2.classList.add("col_2");
+				record.appendChild(col2);
+
+				//Title
+				var row1 = document.createElement("div");
+				if (search_result[i]["media_type"] == "movie") {
+					row1.innerHTML = search_result[i]['title'];
+				} else if (search_result[i]["media_type"] == "tv") {
+					row1.innerHTML = search_result[i]['name'];
+				}
+		        col2.appendChild(row1);
+
+				//Year and genres
+				var row2 = document.createElement("div");
+
+				if (search_result[i]["media_type"] == "movie") {
+					var year = search_result[i]['release_date'].split("-")[0];
+				} else if (search_result[i]["media_type"] == "tv") {
+					var year = search_result[i]['first_air_date'].split("-")[0];
+				}
+		        // var year = search_result[i]['release_date'].split("-")[0];
+
+		        var genres = search_result[i]['genres'].join(', ');
+				var message = `${year} | ${genres}`;
+				row2.innerHTML = message;
+				col2.appendChild(row2);
+
+				//Vote_avg and votes
+				var row3 = document.createElement("div");
+		        var vote_avg = search_result[i]['vote_average'];
+		        var vote_count = search_result[i]['vote_count'];
+				var message = `★ ${vote_avg} ${vote_count} votes`;
+				row3.innerHTML = message;
+				col2.appendChild(row3);
+
+				//Overview
+				var row4 = document.createElement("div");
+				row4.innerHTML = search_result[i]['overview'];
+				col2.appendChild(row4);
+
+				//Show more button
+				var row5 = document.createElement("input");
+				row5.setAttribute('type', 'submit');
+				row5.setAttribute('value', 'Show More');
+				col2.appendChild(row5);
+
+				//Add the completed record to the search result
+				search_result_container.appendChild(record);
+
+				// } else if (search_result[i]["media_type"] == "tv") {
+				// 	console.log('parse tv features here');
+
+				// 	//Title
+			 //        record.innerHTML = search_result[i]['name'];
+			 //        search_result_container.appendChild(record);
+
+
+
+				// }
+			}
+	    }
+
+	    // Now, add the newly created table with json data, to a container.
+	    var divShowData = document.getElementById("search_results");
+	    divShowData.innerHTML = "";
+	    divShowData.appendChild(search_result_container);
+	}
+
+
+	function resetFields() {
+		document.getElementById("content_search_form").reset();
+		document.getElementById("content_type").selectedIndex = -1;
+	}
+
+	function validateForm() {
+	  var search_terms = document.getElementById("search_terms").value;
+	  var content_type = document.getElementById("content_type").value;
+
+	  //Check that the input fields are filled up
+	  if (search_terms == "" || content_type == "") {
+	  	alert("Please fill out valid fields.");
+
+	  }
+	  console.log(search_terms); //Test
+	  console.log(content_type); //Test
+
+	  //REQUEST DRIVER
+	  const url_base = "http://localhost:5000/search?";
+
+	  const query = new URLSearchParams({
+	  	  content_type: content_type,
+		  search_terms: search_terms,
+	  });
+
+	  const url_path = [url_base, query].join('');
+	  console.log(query.toString());
+	  console.log(url_path.toString());
+	  //Returns: /search?content_type=tv&search_terms=office
+
+	  var req3 = new XMLHttpRequest();
+
+	  req3.onreadystatechange = function() {
+	    if (req3.readyState == 4 && req3.status == 200) {
+	      
+	      divsFromJsonSearch(req3); 
+	    }
+	  };
+	  req3.open("GET", url_path, true); // asynchronous
+	  req3.send();
+
+	}
+
+</script>
+</html>

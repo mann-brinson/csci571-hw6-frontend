@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+/****** GLOBAL STYLTING ******/
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: white;
+
+}
+
+.flex-container-slides {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-container-slides > div {
+  background-color: #f1f1f1;
+  /*width: 100px;*/
+  margin: 10px;
+  text-align: center;
+  font-size: 16px;
+}
+
+/* Container for 'airing' or 'trending' */
+/*AIRING*/
+
+/* Slideshow picture */
+.container-record {
+  position: fixed;
+  font-family: Arial;
+  width: 750px;
+  /*height: 200px;*/
+  /*resize: none;*/
+}
+
+/* Slideshow picture caption */
+.text-block {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  /*background-color: black;*/
+  color: white;
+
+  /*margin-top: 200px;*/
+  padding: 20px;
+  background: rgba(40,41,34, 0.6);
+
+  text-align: center;
+}
+
+</style>
+</head>
+<body>
+	<!-- Trending movies go here -->
+	<!-- <h2>Trending</h2> -->
+	<div class="slideshow-container-trending">
+		<div id='trending'></div> 
+	</div>
+
+	<!-- <h2>Airing</h2> -->
+	<div class="slideshow-container-airing">
+		<div id='airing'></div> 
+	</div>
+<!-- 	<div class="flex-container-slides">
+		<div id='trending'></div>
+		<div id='airing'></div> 
+	</div> -->
+
+</body>
+<script>
+  ///// SWITCH SCREENS FUNCTIONALITY /////
+  // Works if CORS enabled on flask server
+  const url1 = "http://localhost:5000/home"; 
+  var slideIndex1 = 0;
+  var slideIndex2 = 0;
+
+  var req1 = new XMLHttpRequest();
+  var req2 = new XMLHttpRequest();
+
+  req1.onreadystatechange = function() {
+    if (req1.readyState == 4 && req1.status == 200) {
+
+      //Construct trending
+      var movie_type = "trending";
+      var item_type = "item-trending";
+      
+      divsFromJson(req1, movie_type, item_type); // Working: TEST 3
+      showSlides(item_type, slideIndex1); // Working: TEST 4
+    }
+  };
+  var req2 = new XMLHttpRequest();
+  req2.onreadystatechange = function() {
+    if (req2.readyState == 4 && req2.status == 200) {
+
+      //Construct trending
+      var movie_type = "airing";
+      var item_type = "item-airing";
+      
+      divsFromJson(req2, movie_type, item_type); // Working: TEST 3
+      showSlides(item_type, slideIndex2); // Working: TEST 4
+    }
+  };
+  req1.open("GET", url1, true); // asynchronous
+  req1.send();
+
+  req2.open("GET", url1, true); // asynchronous
+  req2.send();
+
+  ///// FUNCTIONS /////
+  
+  function divsFromJson(req, movie_type, item_type) {
+  	// Make slideshow from home page endpoint
+    // req: xhr request
+    // movie_type: key name of movie subset, can be "trending" or "airing"
+    var data = req.responseText;
+    var data_json = JSON.parse(data);
+    // var trending = data_json["trending"];
+    var movie_sub = data_json[movie_type];
+
+    //Create 'trending' and 'airing' boxes
+    var cont_slides = document.createElement("div");
+    var header = document.createElement("div");
+    if (movie_type == "airing") {
+    	header.innerHTML = "Airing";
+    } else {
+    	header.innerHTML = "Trending";
+    }
+    cont_slides.appendChild(header);
+
+    // add json data to the table as rows.
+    for (var i = 0; i < movie_sub.length; i++) {
+
+        var cont_record = document.createElement("div"); //Item header
+        cont_record.className = "container-record";
+        cont_record.classList.add(item_type);
+
+        //Title
+        cont_record.innerHTML = movie_sub[i]['name'];
+        cont_slides.appendChild(cont_record);
+
+        //Image
+        var img = document.createElement("img");
+        // var img = document.createElement("div"); 
+        const backdrop_path = movie_sub[i]['backdrop_path']
+        img.src = backdrop_path;
+        // img.style.background = `url(${movie_sub[i]['backdrop_path']})`;
+        img.classList.add("movie_item_img");
+        img.style.height = "250px";
+        cont_record.appendChild(img);
+
+        //Release date
+        var div3 = document.createElement("div"); 
+        div3.innerHTML = movie_sub[i]['release_date'];
+        cont_record.appendChild(div3);
+
+        // var year;
+        // if (movie_type == "trending") {
+        //   // div3.innerHTML = movie_sub[i]['release_date'];
+        //   year = movie_sub[i]['release_date'].split("-")[0];
+        // } else {
+        //   // div3.innerHTML = movie_sub[i]['first_air_date'];
+        //   year = movie_sub[i]['first_air_date'].split("-")[0];
+        // }
+        // div2.appendChild(div3);
+
+        // console.log({year});
+
+        // Title and date - TESTING
+
+        // //Image
+        // var img = document.createElement("img");
+        // const backdrop_path = movie_sub[i]['backdrop_path']
+        // img.src = backdrop_path;
+        // img.style.height = "250px";
+        // cont_record.appendChild(img);
+
+
+        // //Caption - Title and date
+        // var text_block = document.createElement("div"); 
+        // text_block.className = "text-block";
+        // const message = `${movie_sub[i]['name']} (${year})`;
+
+        // var p = document.createElement("p");
+        // p.innerHTML = message;
+        // text_block.appendChild(p);
+
+        // cont_record.appendChild(text_block);
+        // cont_slides.appendChild(cont_record);
+
+    }
+
+    // Now, add the newly created table with json data, to a container.
+    // var divShowData = document.getElementById("trending");
+    var divShowData = document.getElementById(movie_type);
+    divShowData.innerHTML = "";
+    divShowData.appendChild(cont_slides);
+  }
+
+  // TEST 4: After rendering json-to-divs, show slides
+  function showSlides(item_type, slideIndex) {
+    var i;
+    // var trend_items = document.getElementsByClassName("item-trending");
+    console.log({"item_type": item_type});
+    var trend_items = document.getElementsByClassName(item_type);
+
+    // var trend_itemset = document.getElementsById("trending");
+    // var trend_items = trend_itemset.getElementsByClassName("movie_item");
+    for (i = 0; i < trend_items.length; i++) {
+      var test = trend_items[i].innerText;
+      console.log({"Current item" : test})
+      trend_items[i].style.display = "none";  
+    }
+    slideIndex++;
+
+    //Repeat over-and-over
+    if (slideIndex > trend_items.length) {slideIndex = 1}
+
+    trend_items[slideIndex-1].style.display = "block";
+    // setTimeout(showSlides, 2000); // Change image every 2 secs
+    setTimeout(showSlides.bind(null, item_type, slideIndex), 2000);
+
+    // trend_items[0].style.display = "block";
+  }
+
+</script>
+</html>

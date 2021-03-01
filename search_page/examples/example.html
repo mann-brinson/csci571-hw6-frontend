@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+
+	/*GLOBAL STYLING */
+	body {
+	  margin: 0;
+	  font-family: Arial, Helvetica, sans-serif;
+	}
+
+	.outer_search_container {
+		width:500px;
+  		height:200px;
+  		position:fixed;
+	}
+
+	</style>
+</head>
+
+<body>
+	<div class="outer_search_container">
+		<form id="content_search_form"onsubmit ="return false">
+			<!-- LABEL COLUMN -->
+			<div class="label_column">
+				<label for="search_terms">Keyword</label><br>
+				<label for="content_type">Category</label>
+			</div>
+
+			<!-- INPUT FIELD COLUMN -->
+		  	<div class="field_column">
+				<input type="text" id="search_terms" name="search_terms" ><br><br>
+
+				
+			  	<select name="content_type" id="content_type">
+				    <option value="movie">Movies</option>
+				    <option value="tv">TV Shows</option>
+				    <option value="multi">Movies and TV Shows</option>
+			  	</select>
+			  </div>
+
+		  <input type="submit" onclick="submitSearch()" value="Submit">
+		  <input type="button" onclick="resetFields()" value="Reset form">
+		</form> 
+	</div>
+
+</body>
+
+<script>
+	document.getElementById("content_type").selectedIndex = -1; //Category field is empty at first
+	function resetFields() {
+		document.getElementById("content_search_form").reset();
+		document.getElementById("content_type").selectedIndex = -1;
+	}
+
+	function submitSearch() {
+		console.log('made it here');
+	}
+
+</script>
+</html>
