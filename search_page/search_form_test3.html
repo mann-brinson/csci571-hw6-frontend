@@ -8,6 +8,7 @@ body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   background-color: black;
+  max-width: 1000px;
 }
 
 .outer_search_container {
@@ -60,6 +61,16 @@ body {
   /*font-size: 30px;*/
 }
 
+.show-more-button {
+  border-radius: 10px;
+  border: none;
+  color: white;
+  width: 90px;
+  height: 30px;
+  background-color: #c0100d;
+  margin-top: 20px;
+}
+
 /*TESTING: MODAL */
 /* The Modal (background) */
 .modal {
@@ -79,8 +90,6 @@ body {
 
   /* Black w/ opacity */
   background-color: rgba(0,0,0,0.4); 
-
-
 }
 
 /* Modal Content */
@@ -110,13 +119,13 @@ body {
 }
 
 /*TESTING: DETAIL WITHIN MODAL*/
-.flex-container-detail {
+.flex-container-detail-2 {
   display: flex;
   flex-direction: column;
   background-color: #f1f1f1;
 }
 
-.flex-container-detail > div {
+.flex-container-detail-2 > div {
   background-color: #f1f1f1;
   /*width: 100px;*/
   margin: 10px;
@@ -145,19 +154,36 @@ body {
   font-weight: bold;
 }
 
-	</style>
+.truncate-overflow {   
+   display: -webkit-box;   
+   -webkit-line-clamp: 3;   
+   -webkit-box-orient: vertical;     
+   overflow: hidden; 
+}
+
+.footer {
+   position: relative;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: #c0100d;
+   color: white;
+   text-align: right;
+}
+
+</style>
 </head>
-<body>
+<body style="min-height: 100%;">
 	<!-- <form id="content_search_form" name="content_search_form" onsubmit ="return false" > -->
 	<form id="content_search_form" name="content_search_form" onsubmit ="return false" >
 		<div id="flex-container" class="flex-container">
 			
-			  <div id="keyword_field">
+			  <div id="keyword_field" style="width:1000px">
 			  	<label for="search_terms">Keyword</label>
 			  	<input type="text" id="search_terms" name="search_terms" >
 			  </div>
 
-			  <div name="category_field">
+			  <div name="category_field" style="width:1000px">
 			  	<label for="content_type">Category</label>
 			  	<select name="content_type" id="content_type">
 			  		<option value="default"></option>
@@ -167,8 +193,8 @@ body {
 			  	</select>
 			  </div> 
 
-			  <div>
-				<input type="submit" onclick="validateForm()" value="Submit">
+			  <div style="width:1000px">
+          <input type="submit" onclick="validateForm()" value="Submit">
 			  	<input type="button" onclick="resetFields()" value="Reset form">
 			  </div>
 			
@@ -176,6 +202,7 @@ body {
 	</form> 
 
 	<div class="search_results" id="search_results">
+    <div style="height: 550px"></div>
 	</div>
 
 	<!-- TESTING -->
@@ -189,6 +216,12 @@ body {
 	  </div>
 
 	</div>
+
+  <div class="footer">
+    <p style="margin: 0px; font-style: italic; padding-top: 10px;">Designed by Mark Mann</p>
+    <p style="margin: 0px; font-style: italic; padding-bottom: 10px;">Powered by TMDB</p>
+  </div>
+
 </body>
 <script>
   document.getElementById("content_type").selectedIndex = -1; //Category field is empty at first
@@ -205,6 +238,7 @@ body {
     //Check that the input fields are filled up
     if (search_terms == "" || content_type == "") {
       alert("Please fill out valid fields.");
+      return;
     }
 
     console.log(search_terms); //Test
@@ -264,100 +298,124 @@ body {
           record.classList.add("flex-container-record");
           record.setAttribute("id", "flex-container-record");
 
-        // if (search_result[i]["media_type"] == "movie") {
-        console.log('parse movie features here'); //Test
+          // if (search_result[i]["media_type"] == "movie") {
+          console.log('parse movie features here'); //Test
 
-        //// METADATA
-        var metadata = document.createElement("div");
-        // metadata.style.display = "hidden";
-        metadata.setAttribute("id", "metadata");
-        metadata.setAttribute("hidden", true);
+          //// METADATA
+          var metadata = document.createElement("div");
+          // metadata.style.display = "hidden";
+          metadata.setAttribute("id", "metadata");
+          metadata.setAttribute("hidden", true);
 
-        var content_id = document.createElement("div");
-        content_id.setAttribute("id", "content_id_select");
-        content_id.innerHTML = search_result[i]['id'];
-        metadata.appendChild(content_id);
+          var content_id = document.createElement("div");
+          content_id.setAttribute("id", "content_id_select");
+          content_id.innerHTML = search_result[i]['id'];
+          metadata.appendChild(content_id);
 
-        var content_type = document.createElement("div");
-        content_type.setAttribute("id", "content_type_select");
-        content_type.innerHTML = search_result[i]['media_type'];
-        metadata.appendChild(content_type);
-        record.appendChild(metadata);
+          var content_type = document.createElement("div");
+          content_type.setAttribute("id", "content_type_select");
+          content_type.innerHTML = search_result[i]['media_type'];
+          metadata.appendChild(content_type);
+          record.appendChild(metadata);
 
-        //// COL 1
-        var col1 = document.createElement("div"); //Item header
-        col1.classList.add("col_1");
-        record.appendChild(col1);
+          //// COL 1
+          var col1 = document.createElement("div"); //Item header
+          col1.classList.add("col_1");
+          record.appendChild(col1);
 
-        //Poster path
-            var img = document.createElement("img"); 
-            const poster_path = search_result[i]['poster_path']
-            img.src = poster_path;
-            img.classList.add("movie_item_img");
-            img.style.width = "185px";
-            col1.appendChild(img);
+          //Poster path
+          var img = document.createElement("img"); 
+          const poster_path = search_result[i]['poster_path']
+          img.src = poster_path;
+          img.classList.add("movie_item_img");
+          img.style.width = "185px";
+          col1.appendChild(img);
 
-        //// COL 2
-        var col2 = document.createElement("div"); //Item header
-        col2.classList.add("col_2");
-        record.appendChild(col2);
+          //// COL 2
+          var col2 = document.createElement("div"); //Item header
+          col2.classList.add("col_2");
+          col2.style.marginLeft = "30px";
+          record.appendChild(col2);
 
-        //Title
-        var row1 = document.createElement("div");
-        if (search_result[i]["media_type"] == "movie") {
-          row1.innerHTML = search_result[i]['title'];
-        } else if (search_result[i]["media_type"] == "tv") {
-          row1.innerHTML = search_result[i]['name'];
-        }
-            col2.appendChild(row1);
+          //Title
+          var row1 = document.createElement("h2");
+          row1.style.width = "500px";
+          if (search_result[i]["media_type"] == "movie") {
+            row1.innerHTML = search_result[i]['title'];
+          } else if (search_result[i]["media_type"] == "tv") {
+            row1.innerHTML = search_result[i]['name'];
+          }
+              col2.appendChild(row1);
 
-        //Year and genres
-        var row2 = document.createElement("div");
+          //Year and genres
+          var row2 = document.createElement("div");
 
-        if (search_result[i]["media_type"] == "movie") {
-          var year = search_result[i]['release_date'].split("-")[0];
-        } else if (search_result[i]["media_type"] == "tv") {
-          var year = search_result[i]['first_air_date'].split("-")[0];
-        }
-            // var year = search_result[i]['release_date'].split("-")[0];
+          if (search_result[i]["media_type"] == "movie") {
+            var year = search_result[i]['release_date'].split("-")[0];
+          } else if (search_result[i]["media_type"] == "tv") {
+            var year = search_result[i]['first_air_date'].split("-")[0];
+          }
+              // var year = search_result[i]['release_date'].split("-")[0];
 
-            var genres = search_result[i]['genres'].join(', ');
-        var message = `${year} | ${genres}`;
-        row2.innerHTML = message;
-        col2.appendChild(row2);
+          var genres = search_result[i]['genres'].join(', ');
+          var message = `${year} | ${genres}`;
+          row2.innerHTML = message;
+          col2.appendChild(row2);
 
-        //Vote_avg and votes
-        var row3 = document.createElement("div");
-            var vote_avg = search_result[i]['vote_average'];
-            var vote_count = search_result[i]['vote_count'];
-        var message = `★ ${vote_avg} ${vote_count} votes`;
-        row3.innerHTML = message;
-        col2.appendChild(row3);
+          //Vote_avg and votes
+          var row3 = document.createElement("div");
+          var vote_a = document.createElement("span");
+          vote_a.style.cssText = "color: #c0100d; padding-right: 10px";
+          var vote_avg = search_result[i]['vote_average'];
+          var message1 = `★ ${vote_avg}`;
+          vote_a.innerHTML = message1;
+          row3.appendChild(vote_a);
+          
 
-        //Overview
-        var row4 = document.createElement("div");
-        row4.innerHTML = search_result[i]['overview'];
-        col2.appendChild(row4);
+          var vote_c = document.createElement("span");
+          var vote_count = search_result[i]['vote_count'];
+          var message2 = `${vote_count} votes`;
+          vote_c.innerHTML = message2;
+          row3.appendChild(vote_c);
 
-        //Show more button
-        var row5 = document.createElement("input");
-        row5.setAttribute('id', 'show_more_button')
-        row5.setAttribute('type', 'submit');
-        row5.setAttribute('value', 'Show More');
-        //// Get Detail Modal ////
-        row5.onclick = function() {
-          generateDetailsModal(this);
-        }
-        col2.appendChild(row5);
+          col2.appendChild(row3);
 
-        //Add the completed record to the search result
-        search_result_container.appendChild(record);
+          //Overview
+          var row4 = document.createElement("div");
+          // row4.style.cssText = "padding-top: 10px; padding-bottom: 10px; overflow: hidden; text-overflow: ellipsis";
+          row4.className = "truncate-overflow";
+          row4.innerHTML = search_result[i]['overview'];
+          col2.appendChild(row4);
+
+            // name_div.style.overflow = "hidden";
+            // name_div.style.textOverflow = "ellipsis";
+
+          //Show more button
+          var row5 = document.createElement("input");
+          row5.className = "show-more-button";
+          row5.setAttribute('id', 'show_more_button')
+          row5.setAttribute('type', 'submit');
+          row5.setAttribute('value', 'Show More');
+
+          //// Get Detail Modal ////
+          row5.onclick = function() {
+            generateDetailsModal(this);
+          }
+          col2.appendChild(row5);
+
+          //Add the completed record to the search result
+          search_result_container.appendChild(record);
       }
       }
 
       // Now, add the newly created table with json data, to a container.
       var divShowData = document.getElementById("search_results");
+      var head = document.createElement("h2");
+      head.style.cssText = "color: white;";
+      head.innerHTML = "Showing results...";
+      head.style.width = "500px";
       divShowData.innerHTML = "";
+      divShowData.appendChild(head);
       divShowData.appendChild(search_result_container);
   }
 
@@ -407,35 +465,36 @@ body {
     // Create an outer shell
     var modal_container = document.createElement("div");
     modal_container.setAttribute("id", "modal_container");
-    modal_container.setAttribute("class", "flex-container-detail");
+    modal_container.setAttribute("class", "flex-container-detail-2");
 
     //// ROW 1 : Background
     var row1 = document.createElement("div");
     row1.setAttribute("class", "flex-container-record");
 
     // Backdrop image
-        var img = document.createElement("img"); 
-        const backdrop_path = details['backdrop_path']
-        img.src = backdrop_path;
-        img.style.width = "780px";
-        img.style.marginLeft = "auto";
-        img.style.marginRight = "auto";
-        row1.appendChild(img);
+    var img = document.createElement("img"); 
+    const backdrop_path = details['backdrop_path']
+    img.src = backdrop_path;
+    img.style.width = "780px";
+    img.style.marginLeft = "auto";
+    img.style.marginRight = "auto";
+    row1.appendChild(img);
 
-        // Exit tick
-        var exit = document.createElement("span");
-        exit.setAttribute("class", "close");
-        exit.innerHTML = "&times;";
-        row1.appendChild(exit);
+    // Exit tick
+    var exit = document.createElement("span");
+    exit.setAttribute("class", "close");
+    exit.innerHTML = "&times;";
+    row1.appendChild(exit);
 
     modal_container.appendChild(row1);
 
     //// ROW 2 : Details
     var row2 = document.createElement("div");
-    row2.setAttribute("class", "flex-container-detail");
+    row2.setAttribute("class", "flex-container-detail-2");
+    row2.style.paddingLeft = "20px";
 
     // Title
-    var row1_det = document.createElement("h1");
+    var row1_det = document.createElement("h2");
     row1_det.className = "flex-container-record";
     if (content_type == "movie") {
       row1_det.innerHTML = details['title'];
@@ -447,16 +506,17 @@ body {
     // Info box
     var info = document.createElement("a");
     info.innerHTML = "ⓘ";
-    info.style.paddingLeft = "10px";
-    info.style.textDecoration = "none";
-    info.style.color = "red";
+    info.style.cssText = "padding-left: 10px; text-decoration: none; color: #c0100d; font-size: 10; font-size: 14px";
+    // info.style.paddingLeft = "10px";
+    // info.style.textDecoration = "none";
+    // info.style.color = "red";
     const tmdb_link = `https://www.themoviedb.org/${content_type}/${details['id']}`;
 
     info.setAttribute("href", tmdb_link);
     row1_det.appendChild(info);
 
     // Year | Genres
-    var row2_det = document.createElement("h2");
+    var row2_det = document.createElement("h3");
     if (content_type == "movie") {
       var year = details['release_date'].split("-")[0];
     } else if (content_type == "tv") {
@@ -470,10 +530,19 @@ body {
 
     // Stars, votes
     var row3_det = document.createElement("div");
-        var vote_avg = details['vote_average'];
-        var vote_count = details['vote_count'];
-    var message = `★ ${vote_avg} ${vote_count} votes`;
-    row3_det.innerHTML = message;
+    var vote_a = document.createElement("span");
+    vote_a.style.cssText = "color: #c0100d; padding-right: 10px";
+    var vote_avg = details['vote_average'];
+    var message1 = `★ ${vote_avg}`;
+    vote_a.innerHTML = message1;
+    row3_det.appendChild(vote_a);
+
+    var vote_c = document.createElement("span");
+    var vote_count = details['vote_count'];
+    var message2 = `${vote_count} votes`;
+    vote_c.innerHTML = message2;
+    row3_det.appendChild(vote_c);
+
     row2.appendChild(row3_det);
 
     // Overview
@@ -493,13 +562,14 @@ body {
     //// ROW 3 : Credits
 
     //Cast header
-    var header = document.createElement("h2");
+    var header = document.createElement("h3");
     // header.className = "detail_header";
     header.innerHTML = "Cast";
+    header.style.cssText = "padding-left: 30px; margin: 0px;";
     modal_container.appendChild(header);
 
     var row3 = document.createElement("div");
-    row3.setAttribute("class", "flex-container-detail");
+    row3.setAttribute("class", "flex-container-detail-2");
 
     //Take a list of cast (max 8) and make two separate lists, with max 4 items in each list
     // var cast_rows = [];
@@ -558,37 +628,74 @@ body {
     //// ROW 4 : Reviews
 
     //Review header
-    var header = document.createElement("h2");
+    var header = document.createElement("h3");
     // header.className = "detail_header";
     header.innerHTML = "Reviews";
+    header.style.cssText = "padding-left: 30px; padding-top: 10px; margin: 0px;";
     modal_container.appendChild(header);
 
     var row4 = document.createElement("div");
-    row4.setAttribute("class", "flex-container-detail");
+    row4.setAttribute("class", "flex-container-detail-2");
+    row4.style.cssText = "margin-left: 20px";
 
     for (var i = 0; i < reviews.length; i++) {
       //review object
       var review = document.createElement("div");
 
       //username at created_date
+      // var row1_rev = document.createElement("div");
+      // var username = reviews[i]['username'];
+      // var created_at = reviews[i]['created_at'];
+      // var message = `${username} on ${created_at}`;
+      // row1_rev.innerHTML = message;
+      // review.appendChild(row1_rev);
+
       var row1_rev = document.createElement("div");
-      var username = reviews[i]['username'];
-      var created_at = reviews[i]['created_at'];
-      var message = `${username} on ${created_at}`;
-      row1_rev.innerHTML = message;
+      var user_a = document.createElement("span");
+      user_a.style.cssText = "font-weight: bold; padding-right: 5px;";
+      user_a.innerHTML = reviews[i]['username'];
+      row1_rev.appendChild(user_a);
+
+      var created_at = document.createElement("span");
+      var created = reviews[i]['created_at'];
+      var message = `on ${created}`;
+      created_at.innerHTML = message;
+      row1_rev.appendChild(created_at);
+
       review.appendChild(row1_rev);
+
+      // // Stars, votes
+      // var row3_det = document.createElement("div");
+      // var vote_a = document.createElement("span");
+      // vote_a.style.cssText = "color: #c0100d; padding-right: 10px";
+      // var vote_avg = details['vote_average'];
+      // var message1 = `★ ${vote_avg}`;
+      // vote_a.innerHTML = message1;
+      // row3_det.appendChild(vote_a);
+
+      // var vote_c = document.createElement("span");
+      // var vote_count = details['vote_count'];
+      // var message2 = `${vote_count} votes`;
+      // vote_c.innerHTML = message2;
+      // row3_det.appendChild(vote_c);
+
+      // row2.appendChild(row3_det);
 
       //rating
       if (reviews[i]['rating'] != "") {
         var row2_rev = document.createElement("div");
         var rating = reviews[i]['rating'];
         var message = `★ ${rating}`;
+        row2_rev.style.color = "#c0100d";
         row2_rev.innerHTML = message;
         review.appendChild(row2_rev);
       }
 
       //content
       var row3_rev = document.createElement("div");
+      row3_rev.classList.add("truncate-overflow");
+      // row3_rev.style.borderBottom = "1px solid grey";
+      row3_rev.style.cssText = "border-bottom: 1px solid black";
       row3_rev.innerHTML = reviews[i]['content'];
       review.appendChild(row3_rev);
 

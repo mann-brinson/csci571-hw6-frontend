@@ -3,15 +3,24 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+body {
+  background: black;
+  color: white;
+  font-family: Arial;
+  max-width: 1000px;
+}
+
 .flex-container-detail {
   display: flex;
   flex-direction: column;
+  padding-left: 100px;
 }
 
 .flex-container-detail > div > div {
-  background-color: #f1f1f1;
+  background-color: #black;
   /*width: 100px;*/
   margin: 10px;
+  border-left: 30px;
   /*height: 400px;*/
   text-align: center;
   /*line-height: 75px;*/
@@ -23,6 +32,7 @@
   font-family: Arial;
   width: 750px;
   top: 40px;
+  /*padding-left: 100px;*/
   /*height: 200px;*/
   /*resize: none;*/
 }
@@ -55,38 +65,15 @@
 </head>
 
 <body>
-	<!-- Trending movies go here -->
-<!-- 	<h2>Trending</h2>
-	<div class="slideshow-container-trending">
-	<div id='trending'></div> 
-	</div>
+  <div class="flex-container-detail">
+    <h2 style="font-size:18;margin-left:310px;margin-top:0px;">Airing</h2>
+    <div id="trending" ></div>
+  </div>
 
-	<h2>Airing</h2>
-	<div class="slideshow-container-airing">
-	<div id='airing'></div> 
-	</div> -->
-
-<div class="flex-container-detail">
-  <h2 style="font-size:18;margin-left:310px;margin-top:0px;">Airing</h2>
-  <div id="trending"></div>
-<!--     <div class="container-record">
-      <img src="https://www.themoviedb.org/t/p/original/57vVjteucIF3bGnZj6PmaoJRScw.jpg" alt="Nature" style="width:100%;">
-      <div class="text-block">
-        <h4>Nature</h4>
-      </div>
-    </div> -->
-</div>
-
-<div class="flex-container-detail">
-  <h2 style="font-size:18;margin-left:310px;margin-top:370px;">Trending</h2>
-  <div id="airing"></div>
-<!--     <div class="container-record-2">
-      <img src="https://www.themoviedb.org/t/p/original/57vVjteucIF3bGnZj6PmaoJRScw.jpg" alt="Nature" style="width:100%;">
-      <div class="text-block">
-        <h4>Nature</h4>
-      </div>
-    </div> -->
-</div>
+  <div class="flex-container-detail">
+    <h2 style="font-size:18;margin-left:310px;margin-top:370px;">Trending</h2>
+    <div id="airing"></div>
+  </div>
 
 </body>
 
@@ -147,6 +134,7 @@
       console.log(movie_sub[i]['name']);
 
       var slide = document.createElement("div"); //Item header
+      // slide.style.cssText ="left-padding:100px;";
       slide.classList.add(item_type);
       
       if (movie_type == "trending") {
@@ -157,6 +145,7 @@
 
       //Image
       var img = document.createElement("img");
+      // img.style.cssText ="left-padding:100px;";
       const backdrop_path = movie_sub[i]['backdrop_path'];
       img.src = backdrop_path;
       img.style.width = "100%";
