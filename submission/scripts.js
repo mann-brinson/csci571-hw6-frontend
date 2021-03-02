@@ -1,3 +1,6 @@
+//Test
+// console.log(document.styleSheets[0]);
+
 ///// SWITCH SCREENS FUNCTIONALITY /////
 function selectView(active_page_type, inactive_page_type) {
   var active_page = document.getElementById(active_page_type);
@@ -58,7 +61,7 @@ function divsFromJson(req, movie_type, item_type) {
 
   // add json data to the table as rows.
   for (var i = 0; i < movie_sub.length; i++) {
-    console.log(movie_sub[i]['name']);
+    // console.log(movie_sub[i]['name']);
 
     var slide = document.createElement("div"); //Item header
     // slide.style.cssText ="left-padding:100px;";
@@ -96,7 +99,7 @@ function divsFromJson(req, movie_type, item_type) {
 
     // Now, add the newly created table with json data, to a container.
     // var divShowData = document.getElementById("trending");
-    console.log({"movie_type": movie_type});
+    // console.log({"movie_type": movie_type});
     var divShowData = document.getElementById(movie_type);
     console.log({"divShowData": divShowData});
     
@@ -109,14 +112,14 @@ function divsFromJson(req, movie_type, item_type) {
 function showSlides(item_type, slideIndex) {
   var i;
   // var trend_items = document.getElementsByClassName("item-trending");
-  console.log({"item_type": item_type});
+  // console.log({"item_type": item_type});
   var trend_items = document.getElementsByClassName(item_type);
 
   // var trend_itemset = document.getElementsById("trending");
   // var trend_items = trend_itemset.getElementsByClassName("movie_item");
   for (i = 0; i < trend_items.length; i++) {
     var test = trend_items[i].innerText;
-    console.log({"Current item" : test})
+    // console.log({"Current item" : test})
     trend_items[i].style.display = "none";  
   }
   slideIndex++;
